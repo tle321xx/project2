@@ -1,0 +1,6 @@
+hr {
+    border: 1px solid ; /* Set border color and style */
+    width: 80%; /* Set the width of the line */
+    margin: 20px auto; /* Center the line and add margin for spacing */
+  }
+  
