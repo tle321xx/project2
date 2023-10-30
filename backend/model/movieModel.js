@@ -10,6 +10,12 @@ const movieModel = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      title :{
+        type:String,
+      },
+      overview :{
+        type:String,
+      }
 })
 
 export default mongoose.model('price', movieModel)

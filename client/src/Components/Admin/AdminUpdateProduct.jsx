@@ -31,7 +31,10 @@ const AdminUpdateProduct = () => {
     try {
       e.preventDefault();
       const res = await axios.post("http://localhost:9999/api/v1/auth/price", {
-        id: params.id, price: parseFloat(price)
+        id: params.id,
+        price: parseFloat(price),
+        title: movie.title,
+        overview: movie.overview,
       });
       if (res) {
         toast.success("Add price successfully");

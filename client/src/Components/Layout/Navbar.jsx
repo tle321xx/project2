@@ -2,8 +2,9 @@ import React from "react";
 import { NavLink, Link } from "react-router-dom";
 import { GiShoppingBag } from "react-icons/gi";
 import { useAuth } from "../Context/Auth";
+import SearchInput from "../Pages/SearchInput";
 
-const Navbar = () => {
+const Navbar = ({ handleInputChange, query }) => {
   const [auth, setAuth] = useAuth();
   const handleLogout = () => {
     setAuth({
@@ -33,12 +34,14 @@ const Navbar = () => {
             <Link to="/" className="navbar-brand">
               🛒 Ecommerce App
             </Link>
+            <SearchInput/>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <NavLink to="/" className="nav-link ">
                   Home
                 </NavLink>
               </li>
+
               {!auth?.user ? (
                 <>
                   <li className="nav-item">
@@ -54,7 +57,7 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                <li className="nav-item dropdown">
+                  <li className="nav-item dropdown">
                     <NavLink
                       className="nav-link dropdown-toggle"
                       href="#"

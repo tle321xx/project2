@@ -10,6 +10,7 @@ import AdminRoute from "./Components/Routes/AdminRoute";
 import AdminDashBoard from "./Components/Admin/AdminDashBoard";
 import AdminProduct from './Components/Admin/AdminProduct'
 import AdminUpdateProduct from "./Components/Admin/AdminUpdateProduct";
+import Search from "./Components/Pages/Search";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="admin/product" element={<AdminProduct />} />
         <Route path="admin/product/:id" element={<AdminUpdateProduct />} />
       </Route>
+      <Route path="/search" element={<Search />} />
       <Route path="*" element={<Pagenotfound />} />
     </Routes>
   );

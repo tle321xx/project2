@@ -1,9 +1,37 @@
-import React, { Children } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import { Helmet } from "react-helmet";
 import { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 const Layout = ({ children, title, description, keywords, author }) => {
+  const [query, setQuery] = useState("");
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const { data } = await axios.get(
+          "https://api.themoviedb.org/3/search/movie?api_key=d5ab7fc26b1d7286e6674614ce58ea5a&query=a"
+        );
+        setMovies(data.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMovies();
+  }, []);
+
+  console.log(movies)
+
+  const handleInputChange = (event) => {
+    setQuery(event.target.value);
+  };
+
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(query.toLowerCase())
+  );
   return (
     <div>
     <Helmet>
@@ -13,7 +41,7 @@ const Layout = ({ children, title, description, keywords, author }) => {
       <meta name="author" content={author} />
       <title>{title}</title>
     </Helmet>
-    <Navbar />
+    <Navbar query={query} handleInputChange={handleInputChange}/>
     <main style={{ minHeight: "70vh" }}>
       <Toaster />
       {children}

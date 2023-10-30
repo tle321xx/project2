@@ -110,8 +110,8 @@ export const testController = (req, res) => {
 
 export const priceController = async (req, res) => {
   try {
-    const { id, price } = req.body;
-    console.log('Movie ID:', id, 'Price:', price);
+    const { id, price, title, overview } = req.body;
+    console.log('Movie ID:', id, 'Price:', price, 'Title:', title , 'Overview:', overview);
     if (!id || isNaN(price) || price <= 0) {
         return res.status(400).send({ success: false, message: "Invalid movie ID or price" });
       }
@@ -121,11 +121,15 @@ export const priceController = async (req, res) => {
         movie = new movieModel({
           tmdbId: id,
           price: price,
+          title: title,
+          overview: overview
         });
       } else {
         // If the movie exists, update the price
         console.log(price)
         movie.price = price;
+        movie.title = title,
+        movie.overview = overview
       }
       await movie.save();
       res.status(200).send({ success: true, message: "Price added successfully", movie });
@@ -156,4 +160,25 @@ export const getPriceController = async(req,res) =>{
         console.log(error);
         res.status(500).send({ error: 'Internal Server Error' });
       }
+}
+
+export const searchController = async(req,res) =>{
+  try {
+    const { keyword } = req.params;
+    const result = await movieModel
+      .find({
+        $or: [
+          { title: { $regex: keyword, $options: "i" } },
+          { overview: { $regex: keyword, $options: "i" } },
+        ],
+      })
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in search controller",
+      error,
+    });
+  }
 }

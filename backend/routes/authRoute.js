@@ -4,7 +4,8 @@ import {
   loginController,
   testController,
   priceController,
-  getPriceController
+  getPriceController,
+  searchController
 } from "../controller/authController.js";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 
@@ -25,5 +26,7 @@ router.get("/user-auth", requireSignIn, (req, res) => {
 router.get("/admin-auth", requireSignIn,isAdmin, (req, res) => {
   res.status(200).send({ ok: true });
 });
+
+router.get("/search/:keyword", searchController);
 
 export default router;

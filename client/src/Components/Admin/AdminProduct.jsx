@@ -6,8 +6,6 @@ import { Link, useParams } from "react-router-dom";
 
 const AdminProduct = () => {
   const [movies, setMovies] = useState([]);
-  const [price, setPrice] = useState(0);
-  const { id } = useParams(); // Access the id parameter from the URL
 
   const getAllMovies = async () => {
     try {
@@ -25,23 +23,23 @@ const AdminProduct = () => {
     getAllMovies();
   }, []);
 
-  const handleSubmit = async () => {
-    try {
-      const res = await axios.post(
-        "https://api.themoviedb.org/3/search/movie?api_key=d5ab7fc26b1d7286e6674614ce58ea5a&query=a",
-        {
-          price,
-        }
-      );
-      if (res) {
-        setPrice(res.data);
-        toast.success("Add price successfully");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Error in createPrice");
-    }
-  };
+  // const handleSubmit = async () => {
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:9999/api/v1/auth/price",
+  //       {
+  //         price,
+  //       }
+  //     );
+  //     if (res) {
+  //       setPrice(res.data);
+  //       toast.success("Add price successfully");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Error in createPrice");
+  //   }
+  // };
 
   return (
     <Layout>
@@ -49,7 +47,7 @@ const AdminProduct = () => {
       <form
         className="d-flex justify-content-center flex-wrap text-center"
         style={{ width: "2000px" }}
-        onSubmit={handleSubmit}
+        // onSubmit={handleSubmit}
       >
         {movies.map((movie, index) => (
           <Link
