@@ -30,11 +30,30 @@ const AdminUpdateProduct = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      const formData = new FormData();
+      // formData.append("id", params.id);
+      // formData.append("price", parseFloat(price));
+      // formData.append("title", movie.title);
+      // formData.append("overview", movie.overview);
+      // formData.append("original_language", movie.original_language);
+      // formData.append("popularity", movie.popularity);
+      // formData.append("release_date", movie.release_date);
+      // formData.append("vote_averag", movie.vote_averag);
+      // formData.append("vote_count", movie.vote_count);
+      formData.append("poster_path", movie.poster_path);
+      console.log(formData)
       const res = await axios.post("http://localhost:9999/api/v1/auth/price", {
         id: params.id,
         price: parseFloat(price),
         title: movie.title,
+        poster_path: movie.poster_path,
         overview: movie.overview,
+        original_language: movie.original_language,
+        popularity: movie.popularity,
+        release_date: movie.release_date,
+        vote_average: movie.vote_average,
+        vote_count: movie.vote_count,
+        poster_path: movie.poster_path
       });
       if (res) {
         toast.success("Add price successfully");

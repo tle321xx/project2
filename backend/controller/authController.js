@@ -4,9 +4,12 @@ import JWT from "jsonwebtoken";
 import axios from "axios";
 import dotenv from "dotenv";
 import movieModel from "../model/movieModel.js";
+import fs from "fs";
+import multer from 'multer'
 
 dotenv.config();
 
+const upload = multer({ dest: 'uploads/' });
 export const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address, answer } = req.body;
@@ -110,29 +113,69 @@ export const testController = (req, res) => {
 
 export const priceController = async (req, res) => {
   try {
-    const { id, price, title, overview } = req.body;
-    console.log('Movie ID:', id, 'Price:', price, 'Title:', title , 'Overview:', overview);
+    const {
+      id,
+      price,
+      title,
+      overview,
+      original_language,
+      popularity,
+      release_date,
+      vote_average,
+      vote_count,
+      poster_path
+    } = req.body;
+    console.log(
+      "Movie ID:",
+      id,
+      "Price:",
+      price,
+      "Title:",
+      title,
+      "Overview:",
+      overview
+    );
     if (!id || isNaN(price) || price <= 0) {
-        return res.status(400).send({ success: false, message: "Invalid movie ID or price" });
-      }
-      let movie = await movieModel.findOne({ tmdbId: id });
-      console.log(movie)
-      if (!movie) {
-        movie = new movieModel({
-          tmdbId: id,
-          price: price,
-          title: title,
-          overview: overview
-        });
-      } else {
-        // If the movie exists, update the price
-        console.log(price)
-        movie.price = price;
-        movie.title = title,
-        movie.overview = overview
-      }
-      await movie.save();
-      res.status(200).send({ success: true, message: "Price added successfully", movie });
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid movie ID or price" });
+    }
+    let movie = await movieModel.findOne({ tmdbId: id });
+    movie.poster_path = poster_path;
+
+    // if (posterPath) {
+    //   movie.poster_path.data = fs.readFileSync(posterPath.path);
+    //   movie.poster_path.contentType = posterPath.type;
+    // }
+    console.log(movie);
+    if (!movie) {
+      movie = new movieModel({
+        tmdbId: id,
+        price: price,
+        title: title,
+        overview: overview,
+        original_language: original_language,
+        popularity: popularity,
+        release_date: release_date,
+        vote_average: vote_average,
+        vote_count: vote_count,
+      });
+    } else {
+      // If the movie exists, update the price
+      console.log(price);
+      movie.price = price;
+      (movie.title = title),
+        (movie.overview = overview),
+        (movie.original_language = original_language),
+        (movie.popularity = popularity),
+        (movie.release_date = release_date),
+        (movie.vote_average = vote_average),
+        (movie.vote_count = vote_count);
+    }
+    await movie.save();
+    res
+      .status(200)
+      .send({ success: true, message: "Price added successfully", movie });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -143,35 +186,34 @@ export const priceController = async (req, res) => {
   }
 };
 
-export const getPriceController = async(req,res) =>{
-    try {
-        const movieId = req.params.movieId;
-        if (!movieId || isNaN(movieId)) {
-            return res.status(400).send({ error: 'Invalid movie ID' });
-          }
-        const movie = await movieModel.findOne({ tmdbId: movieId });
-        if (movie) {
-          const price = movie.price;
-          res.status(200).send({ price });
-        } else {
-          res.status(404).send({ error: 'Movie not found' });
-        }
-      } catch (error) {
-        console.log(error);
-        res.status(500).send({ error: 'Internal Server Error' });
-      }
-}
+export const getPriceController = async (req, res) => {
+  try {
+    const movieId = req.params.movieId;
+    if (!movieId || isNaN(movieId)) {
+      return res.status(400).send({ error: "Invalid movie ID" });
+    }
+    const movie = await movieModel.findOne({ tmdbId: movieId });
+    if (movie) {
+      const price = movie.price;
+      res.status(200).send({ price });
+    } else {
+      res.status(404).send({ error: "Movie not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+};
 
-export const searchController = async(req,res) =>{
+export const searchController = async (req, res) => {
   try {
     const { keyword } = req.params;
-    const result = await movieModel
-      .find({
-        $or: [
-          { title: { $regex: keyword, $options: "i" } },
-          { overview: { $regex: keyword, $options: "i" } },
-        ],
-      })
+    const result = await movieModel.find({
+      $or: [
+        { title: { $regex: keyword, $options: "i" } },
+        { overview: { $regex: keyword, $options: "i" } },
+      ],
+    });
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -181,4 +223,4 @@ export const searchController = async(req,res) =>{
       error,
     });
   }
-}
+};
