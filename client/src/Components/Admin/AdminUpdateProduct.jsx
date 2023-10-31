@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Layout from "../Layout/Layout";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+
 import "./Style/AdminUpdateProduct.css";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -40,8 +41,9 @@ const AdminUpdateProduct = () => {
       // formData.append("release_date", movie.release_date);
       // formData.append("vote_averag", movie.vote_averag);
       // formData.append("vote_count", movie.vote_count);
-      formData.append("poster_path", movie.poster_path);
+      // formData.append("poster_path", movie.poster_path);
       console.log(formData)
+      console.log(movie.poster_path)
       const res = await axios.post("http://localhost:9999/api/v1/auth/price", {
         id: params.id,
         price: parseFloat(price),

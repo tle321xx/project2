@@ -11,6 +11,7 @@ import AdminDashBoard from "./Components/Admin/AdminDashBoard";
 import AdminProduct from './Components/Admin/AdminProduct'
 import AdminUpdateProduct from "./Components/Admin/AdminUpdateProduct";
 import Search from "./Components/Pages/Search";
+import UserSingleProduct from "./Components/User/UserSingleProduct";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<PrivateRoute />}>
         <Route path="user" element={<DashBoard />} />
+        <Route path="user/:id" element={<UserSingleProduct />} />
       </Route>
       <Route path="/dashboard" element={<AdminRoute />}>
         <Route path="admin" element={<AdminDashBoard />} />

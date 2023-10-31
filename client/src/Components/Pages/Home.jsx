@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Layout from "../Layout/Layout";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Link, useParams } from "react-router-dom";
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -39,13 +40,19 @@ const Home = () => {
 
   return (
     <Layout>
-      <h3 className="text-center">All Movies</h3>
-      <form
-        className="d-flex justify-content-center flex-wrap text-center"
-        style={{ width: "2000px" }}
-      >
-        {movies.map((movie, index) => (
-          <div className="card m-2 pb-4" style={{ width: "18rem" }} key={index}>
+    <h3 className="text-center">All Movies</h3>
+    <form
+      className="d-flex justify-content-center flex-wrap text-center"
+      style={{ width: "2000px" }}
+      // onSubmit={handleSubmit}
+    >
+      {movies.map((movie, index) => (
+        <Link
+          key={movie._id}
+          to={`/dashboard/user/${movie.id}`} // Link to the product detail page with movie id
+          className="product-link"
+        >
+          <div className="card m-2 pb-3" style={{ width: "18rem" }} key={index}>
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={movie.title}
@@ -53,16 +60,17 @@ const Home = () => {
             />
             <h5 className="pt-3">{movie.title.substring(0, 30)}</h5>
             <p>{movie.overview.substring(0, 100)}...</p>
-            <p> Vote Average: {movie.vote_average.toFixed(2)}  </p>
-            <p> Vote Count: {movie.vote_count}</p>
-            <h5 className="pt-3">
-              {movie.price ? `$${movie.price}` : "Price not available"}
-            </h5>
-            <button className="btn btn-primary m-2" type="submit">Add To Cart!</button>
+          <p> Vote Average: {movie.vote_average}  </p>
+          <p> Vote Count: {movie.vote_count}</p>
+          <h5 className="pt-3">
+            {movie.price ? `$${movie.price}` : "Price not available"}
+          </h5>
+          <button className="btn btn-primary m-2" type="submit">Add To Cart!</button>
           </div>
-        ))}
-      </form>
-    </Layout>
+        </Link>
+      ))}
+    </form>
+  </Layout>
   );
 };
 
