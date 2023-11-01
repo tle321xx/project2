@@ -3,9 +3,13 @@ import { NavLink, Link } from "react-router-dom";
 import { GiShoppingBag } from "react-icons/gi";
 import { useAuth } from "../Context/Auth";
 import SearchInput from "../Pages/SearchInput";
+import { useCart } from "../Context/Cart";
+import { Badge } from "antd";
 
 const Navbar = ({ handleInputChange, query }) => {
   const [auth, setAuth] = useAuth();
+  const [cart, setCart] = useCart();
+
   const handleLogout = () => {
     setAuth({
       ...auth,
@@ -34,7 +38,7 @@ const Navbar = ({ handleInputChange, query }) => {
             <Link to="/" className="navbar-brand">
               🛒 Ecommerce App
             </Link>
-            <SearchInput/>
+            <SearchInput />
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <NavLink to="/" className="nav-link ">
@@ -92,9 +96,11 @@ const Navbar = ({ handleInputChange, query }) => {
                 </>
               )}
               <li className="nav-item">
-                <NavLink to="/cart" className="nav-link">
-                  Cart (0)
-                </NavLink>
+                <Badge count={cart?.length} showZero>
+                  <NavLink to="/cart" className="nav-link" href="#">
+                    Cart
+                  </NavLink>
+                </Badge>
               </li>
             </ul>
           </div>

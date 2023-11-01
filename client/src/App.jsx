@@ -12,6 +12,9 @@ import AdminProduct from './Components/Admin/AdminProduct'
 import AdminUpdateProduct from "./Components/Admin/AdminUpdateProduct";
 import Search from "./Components/Pages/Search";
 import UserSingleProduct from "./Components/User/UserSingleProduct";
+import CartPage from "./Components/Pages/CartPage";
+import UserProfile from "./Components/User/UserProfile";
+import Order from "./Components/User/Order";
 
 function App() {
   return (
@@ -21,7 +24,9 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<PrivateRoute />}>
         <Route path="user" element={<DashBoard />} />
+        <Route path="user/profile" element={<UserProfile />} />
         <Route path="user/:id" element={<UserSingleProduct />} />
+        <Route path="user/orders" element={<Order />} />
       </Route>
       <Route path="/dashboard" element={<AdminRoute />}>
         <Route path="admin" element={<AdminDashBoard />} />
@@ -29,6 +34,7 @@ function App() {
         <Route path="admin/product/:id" element={<AdminUpdateProduct />} />
       </Route>
       <Route path="/search" element={<Search />} />
+      <Route path="/cart" element={<CartPage />} />
       <Route path="*" element={<Pagenotfound />} />
     </Routes>
   );

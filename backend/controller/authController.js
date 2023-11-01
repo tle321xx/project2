@@ -4,12 +4,17 @@ import JWT from "jsonwebtoken";
 import axios from "axios";
 import dotenv from "dotenv";
 import movieModel from "../model/movieModel.js";
-import fs from "fs";
-import multer from 'multer'
-
+import braintree from "braintree";
+import orderModel from "../model/orderModel.js";
 dotenv.config();
 
-const upload = multer({ dest: 'uploads/' });
+var gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY,
+});
+
 export const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address, answer } = req.body;
@@ -110,6 +115,41 @@ export const loginController = async (req, res) => {
 export const testController = (req, res) => {
   res.send("Test Controller");
 };
+
+export const updateProfileController = async(req,res) => {
+  try {
+    const { name, email, password, address, phone } = req.body;
+    const user = await userModel.findById(req.user._id);
+    if (password && password.length < 6) {
+      return res.json({
+        error: "Password is required and at least 6 charactors",
+      });
+    }
+    const hashedPassword = password ? await hashPassword(password) : undefined;
+    const updateUser = await userModel.findByIdAndUpdate(
+      req.user._id,
+      {
+        name: name || user.name,
+        password: hashedPassword || user.password,
+        address: address || user.address,
+        phone: phone || user.phone,
+      },
+      { new: true }
+    );
+    res.status(200).send({
+      success: true,
+      message: "Update Profile Successfully",
+      updateUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Issue in updateProfileController",
+      error,
+    });
+  }
+}
 
 export const priceController = async (req, res) => {
   try {
@@ -224,3 +264,79 @@ export const searchController = async (req, res) => {
     });
   }
 };
+
+export const braintreeTokenController = async (req,res) =>{
+  try {
+    gateway.clientToken.generate({}, function (err, response){
+      if(err){
+        console.log(err);
+        res.status(500).send(err)
+      } else {
+        res.send(response)
+      }
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      error,
+      message: "Error in braintree Token Controller",
+    });
+  }
+}
+
+export const braintreePaymentController = async (req, res) =>{
+  try {
+   const {cart, nonce} = req.body
+   let total = 0;
+    cart.map((i) => {
+      total += i.price;
+    });
+    let result = await gateway.transaction.sale(
+      {
+        amount: total,
+        paymentMethodNonce: nonce,
+        options: {
+          submitForSettlement: true,
+        },
+      },
+      function (error, result) {
+        if (result) {
+          const order = new orderModel({
+            products: cart,
+            payment: result,
+            buyer: req.user._id,
+          })
+          order.save();
+          res.json({ ok: true });
+        } else {
+          res.status(500).send(error);
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      error,
+      message: "Error in braintree Payment Controller",
+    });
+  }
+}
+
+
+export const getOrdersController = async (req,res) => {
+  try {
+    const orders = await orderModel
+      .find({ buyer: req.user._id })
+      .populate("buyer", "name");
+    res.json(orders);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error WHile Geting Orders",
+      error,
+    });
+  }
+}
