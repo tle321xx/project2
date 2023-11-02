@@ -15,6 +15,7 @@ import UserSingleProduct from "./Components/User/UserSingleProduct";
 import CartPage from "./Components/Pages/CartPage";
 import UserProfile from "./Components/User/UserProfile";
 import Order from "./Components/User/Order";
+import AdminOrders from "./Components/Admin/AdminOrders";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
       </Route>
       <Route path="/dashboard" element={<AdminRoute />}>
         <Route path="admin" element={<AdminDashBoard />} />
+        <Route path="admin/orders" element={<AdminOrders />} />
         <Route path="admin/product" element={<AdminProduct />} />
         <Route path="admin/product/:id" element={<AdminUpdateProduct />} />
       </Route>

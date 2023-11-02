@@ -9,7 +9,9 @@ import {
   updateProfileController,
   braintreeTokenController,
   braintreePaymentController,
-  getOrdersController
+  getOrdersController,
+  getAllOrdersController,
+  orderStatusController
 } from "../controller/authController.js";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 
@@ -42,5 +44,15 @@ router.get("/braintree/token", braintreeTokenController);
 router.post("/braintree/payment", requireSignIn, braintreePaymentController);
 
 router.get("/orders", requireSignIn, getOrdersController);
+
+router.get("/all-orders", requireSignIn, isAdmin, getAllOrdersController);
+
+// order status update
+router.put(
+  "/order-status/:orderId",
+  requireSignIn,
+  isAdmin,
+  orderStatusController
+);
 
 export default router;
